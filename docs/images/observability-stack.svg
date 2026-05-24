@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" role="img" aria-label="Observability stack">
+  <rect width="800" height="280" fill="#0f172a"/>
+  <text x="400" y="30" text-anchor="middle" fill="#f1f5f9" font-family="Segoe UI, sans-serif" font-size="16" font-weight="600">Observability Pipeline</text>
+
+  <rect x="40" y="60" width="140" height="160" rx="8" fill="#1e293b" stroke="#64748b"/>
+  <text x="110" y="90" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Segoe UI, sans-serif">Go Services</text>
+  <text x="110" y="115" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">/metrics</text>
+  <text x="110" y="135" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">OTel traces</text>
+  <text x="110" y="155" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">structured logs</text>
+
+  <line x1="180" y1="140" x2="220" y2="140" stroke="#64748b" stroke-width="2"/>
+  <polygon points="220,140 212,136 212,144" fill="#64748b"/>
+
+  <rect x="220" y="100" width="120" height="80" rx="8" fill="#1e3a5f" stroke="#3b82f6"/>
+  <text x="280" y="135" text-anchor="middle" fill="#bfdbfe" font-size="11" font-family="Segoe UI, sans-serif">OTel</text>
+  <text x="280" y="155" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="Segoe UI, sans-serif">Collector</text>
+
+  <line x1="340" y1="120" x2="380" y2="100" stroke="#64748b" stroke-width="2"/>
+  <line x1="340" y1="160" x2="380" y2="180" stroke="#64748b" stroke-width="2"/>
+
+  <rect x="380" y="55" width="130" height="70" rx="8" fill="#450a0a" stroke="#ef4444"/>
+  <text x="445" y="90" text-anchor="middle" fill="#fecaca" font-size="12" font-family="Segoe UI, sans-serif">Prometheus</text>
+  <text x="445" y="108" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">:9090</text>
+
+  <rect x="380" y="155" width="130" height="70" rx="8" fill="#312e81" stroke="#8b5cf6"/>
+  <text x="445" y="190" text-anchor="middle" fill="#ddd6fe" font-size="12" font-family="Segoe UI, sans-serif">Jaeger</text>
+  <text x="445" y="208" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">:16686</text>
+
+  <line x1="510" y1="90" x2="550" y2="90" stroke="#64748b" stroke-width="2"/>
+  <polygon points="550,90 542,86 542,94" fill="#64748b"/>
+
+  <rect x="550" y="55" width="130" height="70" rx="8" fill="#422006" stroke="#f59e0b"/>
+  <text x="615" y="90" text-anchor="middle" fill="#fde68a" font-size="12" font-family="Segoe UI, sans-serif">Grafana</text>
+  <text x="615" y="108" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">:3001</text>
+
+  <rect x="550" y="155" width="200" height="70" rx="8" fill="#1e293b" stroke="#22d3ee"/>
+  <text x="650" y="185" text-anchor="middle" fill="#a5f3fc" font-size="11" font-family="Segoe UI, sans-serif">Dashboard + Alerts</text>
+  <text x="650" y="205" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Segoe UI, sans-serif">Real-time ops UI :3000</text>
+</svg>

@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  go-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Build shared
+        run: cd shared/go && go mod tidy
+      - name: Build services
+        run: |
+          for svc in tx-ingestion bank-simulator failure-detector retry-orchestrator analytics api-gateway tx-generator fraud-detector notification intelligent-routing; do
+            cd services/$svc
+            go mod tidy
+            go build -o /dev/null ./cmd/server
+            cd ../..
+          done
+
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - name: Lint chart
+        run: helm lint helm/upi-platform -f helm/upi-platform/values.yaml
+
+  dashboard-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: apps/dashboard/package-lock.json
+      - name: Install & build
+        working-directory: apps/dashboard
+        run: |
+          npm install
+          npm run build

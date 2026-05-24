@@ -1,0 +1,34 @@
+{{- if .Values.infra.redis.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: upi-redis
+  namespace: {{ .Values.global.namespace }}
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: upi-redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upi-redis
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upi-redis
+  template:
+    metadata:
+      labels:
+        app: upi-redis
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.infra.redis.image }}
+          ports:
+            - containerPort: 6379
+          args: ["redis-server", "--appendonly", "yes"]
+{{- end }}

@@ -1,0 +1,46 @@
+{{- if .Values.infra.postgres.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: upi-postgres
+  namespace: {{ .Values.global.namespace }}
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: upi-postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upi-postgres
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upi-postgres
+  template:
+    metadata:
+      labels:
+        app: upi-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.infra.postgres.image }}
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.global.postgres.user | quote }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.global.postgres.password | quote }}
+            - name: POSTGRES_DB
+              value: {{ .Values.global.postgres.database | quote }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: data
+          emptyDir: {}
+{{- end }}

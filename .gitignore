@@ -1,0 +1,72 @@
+# Binaries
+bin/
+*.exe
+dist/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Go
+vendor/
+*.test
+coverage.out
+coverage.html
+
+# Node
+node_modules/
+.next/
+apps/dashboard/.env.local
+out/
+.turbo/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+models/*.pkl
+models/*.joblib
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+
+# Kubernetes secrets (never commit real secrets)
+**/secrets/*.yaml
+!**/secrets/.gitkeep
+
+# Logs & temp
+logs/
+!logs/.gitkeep
+tmp/
+*.log
+
+# Benchmark artifacts
+load-tests/results/
+benchmarks/reports/*.html
+
+# Docker volumes
+data/

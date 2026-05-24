@@ -1,0 +1,31 @@
+{{- define "upi.hpa" -}}
+{{- $root := index . 0 -}}
+{{- $cfg := index . 1 -}}
+{{- if and $cfg.enabled ($cfg.hpa.enabled | default false) }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $cfg.name }}
+  namespace: {{ $root.Values.global.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ $cfg.name }}
+  minReplicas: {{ $cfg.hpa.minReplicas }}
+  maxReplicas: {{ $cfg.hpa.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ $cfg.hpa.targetCPUUtilization }}
+---
+{{- end }}
+{{- end }}
+
+{{ include "upi.hpa" (list . .Values.services.apiGateway) }}
+{{ include "upi.hpa" (list . .Values.services.txIngestion) }}
+{{ include "upi.hpa" (list . .Values.services.bankSimulator) }}
+{{ include "upi.hpa" (list . .Values.services.analytics) }}

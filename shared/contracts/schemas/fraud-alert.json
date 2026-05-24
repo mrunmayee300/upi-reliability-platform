@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://upi-platform.local/schemas/fraud-alert/v1",
+  "title": "FraudAlert",
+  "type": "object",
+  "required": ["alert_id", "transaction_id", "anomaly_score", "severity", "created_at"],
+  "properties": {
+    "alert_id": { "type": "string", "format": "uuid" },
+    "transaction_id": { "type": "string" },
+    "anomaly_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "severity": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+    "signals": {
+      "type": "array",
+      "items": { "type": "string" },
+      "examples": ["velocity_spike", "geo_anomaly", "amount_outlier"]
+    },
+    "created_at": { "type": "string", "format": "date-time" }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://upi-platform.local/schemas/transaction-failure/v1",
+  "title": "TransactionFailure",
+  "type": "object",
+  "required": [
+    "transaction_id",
+    "failure_code",
+    "failure_cause",
+    "retryable",
+    "bank_code",
+    "failed_at",
+    "attempt_number"
+  ],
+  "properties": {
+    "transaction_id": { "type": "string" },
+    "failure_code": {
+      "type": "string",
+      "enum": [
+        "BANK_TIMEOUT",
+        "BANK_OVERLOAD",
+        "INSUFFICIENT_FUNDS",
+        "INVALID_VPA",
+        "DUPLICATE_TXN",
+        "FRAUD_SUSPECT",
+        "NPCI_SWITCH_DOWN",
+        "UNKNOWN"
+      ]
+    },
+    "failure_cause": {
+      "type": "string",
+      "description": "Human-readable enriched cause from Failure Detector"
+    },
+    "retryable": { "type": "boolean" },
+    "bank_code": { "type": "string" },
+    "failed_at": { "type": "string", "format": "date-time" },
+    "attempt_number": { "type": "integer", "minimum": 0 },
+    "latency_ms": { "type": "integer", "minimum": 0 },
+    "original_transaction": {
+      "$ref": "transaction.json"
+    }
+  }
+}

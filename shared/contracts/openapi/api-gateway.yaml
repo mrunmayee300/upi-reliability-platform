@@ -1,0 +1,148 @@
+openapi: 3.1.0
+info:
+  title: API Gateway Service
+  version: 1.0.0
+  description: Edge gateway — auth simulation, rate limiting, routing to backend services
+
+servers:
+  - url: http://localhost:8080
+    description: Local
+  - url: https://api.upi-platform.local
+    description: Production ingress
+
+tags:
+  - name: transactions
+  - name: health
+  - name: admin
+
+paths:
+  /health/live:
+    get:
+      tags: [health]
+      summary: Liveness probe
+      operationId: liveness
+      responses:
+        '200':
+          description: Alive
+
+  /health/ready:
+    get:
+      tags: [health]
+      summary: Readiness probe
+      operationId: readiness
+      responses:
+        '200':
+          description: Ready
+        '503':
+          description: Not ready
+
+  /v1/transactions:
+    post:
+      tags: [transactions]
+      summary: Submit UPI transaction (proxied to Tx Ingestion)
+      operationId: createTransaction
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/Authorization'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/transaction.json'
+      responses:
+        '202':
+          description: Accepted for processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionAccepted'
+        '409':
+          description: Duplicate idempotency key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+        '401':
+          description: Unauthorized
+
+  /v1/metrics/summary:
+    get:
+      tags: [transactions]
+      summary: Aggregated metrics (proxied to Analytics)
+      operationId: getMetricsSummary
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+      responses:
+        '200':
+          description: Metrics snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsSummary'
+
+components:
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: false
+      schema:
+        type: string
+        format: uuid
+    Authorization:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+        example: Bearer dev-api-key-001
+
+  schemas:
+    TransactionAccepted:
+      type: object
+      required: [transaction_id, status, correlation_id]
+      properties:
+        transaction_id:
+          type: string
+        status:
+          type: string
+          enum: [ACCEPTED, DUPLICATE]
+        correlation_id:
+          type: string
+          format: uuid
+
+    MetricsSummary:
+      type: object
+      properties:
+        tps:
+          type: number
+        failure_rate:
+          type: number
+        p95_latency_ms:
+          type: integer
+        retry_rate:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      required: [error_code, message]
+      properties:
+        error_code:
+          type: string
+        message:
+          type: string
+        correlation_id:
+          type: string

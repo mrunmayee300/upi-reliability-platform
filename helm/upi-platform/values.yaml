@@ -1,0 +1,145 @@
+global:
+  namespace: upi-platform
+  imageRegistry: ""
+  imagePullPolicy: IfNotPresent
+  kafka:
+    brokers: upi-kafka:9092
+  postgres:
+    host: upi-postgres
+    port: 5432
+    user: upi
+    password: upi_dev_password
+    database: upi_platform
+  redis:
+    addr: upi-redis:6379
+  otel:
+    endpoint: http://upi-otel-collector:4318
+  apiKeys: dev-api-key-001
+
+infra:
+  kafka:
+    enabled: true
+    image: apache/kafka:3.8.1
+    replicas: 1
+  postgres:
+    enabled: true
+    image: postgres:16-alpine
+    storage: 5Gi
+  redis:
+    enabled: true
+    image: redis:7-alpine
+  observability:
+    enabled: true
+    prometheus: true
+    grafana: true
+    jaeger: true
+    otelCollector: true
+
+ingress:
+  enabled: true
+  className: nginx
+  host: upi.local
+  tls: false
+
+services:
+  apiGateway:
+    enabled: true
+    name: api-gateway
+    port: 8080
+    replicas: 2
+    image: upi/api-gateway:latest
+    hpa:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 8
+      targetCPUUtilization: 70
+  txIngestion:
+    enabled: true
+    name: tx-ingestion
+    port: 8081
+    replicas: 3
+    image: upi/tx-ingestion:latest
+    hpa:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 20
+      targetCPUUtilization: 70
+  txGenerator:
+    enabled: true
+    name: tx-generator
+    port: 8082
+    replicas: 1
+    image: upi/tx-generator:latest
+    hpa:
+      enabled: false
+  bankSimulator:
+    enabled: true
+    name: bank-simulator
+    port: 8083
+    replicas: 3
+    image: upi/bank-simulator:latest
+    hpa:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 15
+      targetCPUUtilization: 75
+  failureDetector:
+    enabled: true
+    name: failure-detector
+    port: 8084
+    replicas: 2
+    image: upi/failure-detector:latest
+    hpa:
+      enabled: false
+  retryOrchestrator:
+    enabled: true
+    name: retry-orchestrator
+    port: 8085
+    replicas: 2
+    image: upi/retry-orchestrator:latest
+    hpa:
+      enabled: false
+  intelligentRouting:
+    enabled: true
+    name: intelligent-routing
+    port: 8086
+    replicas: 2
+    image: upi/intelligent-routing:latest
+    hpa:
+      enabled: false
+  fraudDetector:
+    enabled: true
+    name: fraud-detector
+    port: 8087
+    replicas: 2
+    image: upi/fraud-detector:latest
+    hpa:
+      enabled: false
+  notification:
+    enabled: true
+    name: notification
+    port: 8090
+    replicas: 1
+    image: upi/notification:latest
+    hpa:
+      enabled: false
+  analytics:
+    enabled: true
+    name: analytics
+    port: 8089
+    replicas: 2
+    image: upi/analytics:latest
+    hpa:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPUUtilization: 70
+  dashboard:
+    enabled: true
+    name: dashboard
+    port: 3000
+    replicas: 2
+    image: upi/dashboard:latest
+    env:
+      analyticsUrl: http://api-gateway:8080
+      wsUrl: ws://analytics:8089/v1/ws/live

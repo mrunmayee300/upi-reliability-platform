@@ -1,0 +1,93 @@
+openapi: 3.1.0
+info:
+  title: Bank Simulation Service
+  version: 1.0.0
+  description: Simulates bank PSP behavior — latency, failures, overload
+
+servers:
+  - url: http://localhost:8083
+
+paths:
+  /health/ready:
+    get:
+      responses:
+        '200':
+          description: OK
+
+  /v1/banks:
+    get:
+      operationId: listBanks
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BankConfig'
+
+  /v1/banks/{bankCode}/config:
+    put:
+      operationId: updateBankConfig
+      parameters:
+        - name: bankCode
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BankConfig'
+      responses:
+        '200':
+          description: Updated
+
+  /v1/simulate/process:
+    post:
+      operationId: processTransaction
+      summary: Direct process (debug); production path is Kafka consumer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/transaction.json'
+      responses:
+        '200':
+          description: Processing result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankProcessResult'
+
+components:
+  schemas:
+    BankConfig:
+      type: object
+      properties:
+        bank_code:
+          type: string
+        base_latency_ms:
+          type: integer
+        latency_jitter_ms:
+          type: integer
+        failure_rate:
+          type: number
+        overload_threshold_rps:
+          type: integer
+        circuit_enabled:
+          type: boolean
+
+    BankProcessResult:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+        status:
+          type: string
+          enum: [SUCCESS, FAILED]
+        failure_code:
+          type: string
+        latency_ms:
+          type: integer

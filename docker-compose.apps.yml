@@ -1,0 +1,128 @@
+name: upi-platform
+
+services:
+  tx-ingestion:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.service
+      args:
+        SERVICE_PATH: services/tx-ingestion
+    container_name: upi-tx-ingestion
+    environment:
+      HTTP_PORT: "8081"
+      KAFKA_BROKERS: kafka:9092
+      POSTGRES_DSN: postgres://upi:upi_dev_password@postgres:5432/upi_platform?sslmode=disable
+      REDIS_ADDR: redis:6379
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+    ports:
+      - "8081:8081"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  bank-simulator:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.service
+      args:
+        SERVICE_PATH: services/bank-simulator
+    container_name: upi-bank-simulator
+    environment:
+      HTTP_PORT: "8083"
+      KAFKA_BROKERS: kafka:9092
+    ports:
+      - "8083:8083"
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  failure-detector:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.service
+      args:
+        SERVICE_PATH: services/failure-detector
+    container_name: upi-failure-detector
+    environment:
+      HTTP_PORT: "8084"
+      KAFKA_BROKERS: kafka:9092
+    ports:
+      - "8084:8084"
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  retry-orchestrator:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.service
+      args:
+        SERVICE_PATH: services/retry-orchestrator
+    container_name: upi-retry-orchestrator
+    environment:
+      HTTP_PORT: "8085"
+      KAFKA_BROKERS: kafka:9092
+      POSTGRES_DSN: postgres://upi:upi_dev_password@postgres:5432/upi_platform?sslmode=disable
+      MAX_RETRY_ATTEMPTS: "5"
+    ports:
+      - "8085:8085"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  analytics:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.service
+      args:
+        SERVICE_PATH: services/analytics
+    container_name: upi-analytics
+    environment:
+      HTTP_PORT: "8089"
+      KAFKA_BROKERS: kafka:9092
+    ports:
+      - "8089:8089"
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.service
+      args:
+        SERVICE_PATH: services/api-gateway
+    container_name: upi-api-gateway
+    environment:
+      HTTP_PORT: "8080"
+      REDIS_ADDR: redis:6379
+      INGESTION_URL: http://tx-ingestion:8081
+      ANALYTICS_URL: http://analytics:8089
+      API_KEYS: dev-api-key-001
+    ports:
+      - "8080:8080"
+    depends_on:
+      - tx-ingestion
+      - analytics
+      - redis
+
+  tx-generator:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.service
+      args:
+        SERVICE_PATH: services/tx-generator
+    container_name: upi-tx-generator
+    environment:
+      HTTP_PORT: "8082"
+      INGESTION_URL: http://tx-ingestion:8081
+    ports:
+      - "8082:8082"
+    depends_on:
+      - tx-ingestion

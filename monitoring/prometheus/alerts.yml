@@ -1,0 +1,20 @@
+groups:
+  - name: upi-platform-alerts
+    rules:
+      - alert: OTelCollectorDown
+        expr: up{job="otel-collector"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "OTel collector unavailable"
+          description: "OpenTelemetry collector is down, traces/metrics export is impacted."
+
+      - alert: PrometheusTargetDown
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Prometheus target down"
+          description: "A scrape target has been down for 5 minutes."

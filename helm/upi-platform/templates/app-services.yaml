@@ -1,0 +1,91 @@
+{{- define "upi.microservice" -}}
+{{- $root := index . 0 -}}
+{{- $cfg := index . 1 -}}
+{{- $extra := index . 2 -}}
+{{- if $cfg.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $cfg.name }}
+  namespace: {{ $root.Values.global.namespace }}
+spec:
+  selector:
+    app: {{ $cfg.name }}
+  ports:
+    - port: {{ $cfg.port }}
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $cfg.name }}
+  namespace: {{ $root.Values.global.namespace }}
+spec:
+  replicas: {{ $cfg.replicas }}
+  selector:
+    matchLabels:
+      app: {{ $cfg.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $cfg.name }}
+    spec:
+      containers:
+        - name: {{ $cfg.name }}
+          image: {{ $cfg.image }}
+          imagePullPolicy: {{ $root.Values.global.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ $cfg.port }}
+          env:
+            - name: HTTP_PORT
+              value: {{ $cfg.port | quote }}
+            {{- include "upi.serviceEnv" $root | nindent 12 }}
+            {{- if $extra }}
+            {{- $extra | nindent 12 }}
+            {{- end }}
+          envFrom:
+            - configMapRef:
+                name: upi-config
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            initialDelaySeconds: 8
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+---
+{{- end }}
+{{- end }}
+
+{{ include "upi.microservice" (list . .Values.services.txIngestion "") }}
+{{ include "upi.microservice" (list . .Values.services.bankSimulator "") }}
+{{ include "upi.microservice" (list . .Values.services.failureDetector "") }}
+{{ include "upi.microservice" (list . .Values.services.retryOrchestrator "") }}
+{{ include "upi.microservice" (list . .Values.services.intelligentRouting "") }}
+{{ include "upi.microservice" (list . .Values.services.fraudDetector "") }}
+{{ include "upi.microservice" (list . .Values.services.notification "") }}
+{{ include "upi.microservice" (list . .Values.services.analytics "") }}
+{{ include "upi.microservice" (list . .Values.services.txGenerator `
+            - name: INGESTION_URL
+              value: http://tx-ingestion:8081
+`) }}
+{{ include "upi.microservice" (list . .Values.services.apiGateway `
+            - name: API_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: upi-secrets
+                  key: api-keys
+`) }}

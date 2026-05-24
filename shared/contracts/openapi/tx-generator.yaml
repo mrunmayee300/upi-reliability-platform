@@ -1,0 +1,83 @@
+openapi: 3.1.0
+info:
+  title: Transaction Generator Service
+  version: 1.0.0
+  description: Synthetic UPI load generator with configurable TPS and failure injection
+
+servers:
+  - url: http://localhost:8082
+
+paths:
+  /health/live:
+    get:
+      responses:
+        '200':
+          description: OK
+
+  /v1/generator/start:
+    post:
+      operationId: startGenerator
+      summary: Start synthetic transaction generation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeneratorConfig'
+      responses:
+        '200':
+          description: Generator started
+
+  /v1/generator/stop:
+    post:
+      operationId: stopGenerator
+      responses:
+        '200':
+          description: Generator stopped
+
+  /v1/generator/status:
+    get:
+      operationId: getGeneratorStatus
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratorStatus'
+
+components:
+  schemas:
+    GeneratorConfig:
+      type: object
+      properties:
+        tps:
+          type: integer
+          minimum: 1
+          maximum: 50000
+          default: 1000
+        failure_rate:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 0.05
+        bank_distribution:
+          type: object
+          additionalProperties:
+            type: number
+        duration_seconds:
+          type: integer
+          default: 0
+          description: 0 = run until stopped
+
+    GeneratorStatus:
+      type: object
+      properties:
+        running:
+          type: boolean
+        current_tps:
+          type: number
+        total_generated:
+          type: integer
+        total_accepted:
+          type: integer
+        total_rejected:
+          type: integer

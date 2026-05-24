@@ -1,0 +1,154 @@
+asyncapi: 3.0.0
+info:
+  title: UPI Platform Event API
+  version: 1.0.0
+  description: |
+    Kafka event contracts for the UPI Transaction Intelligence Platform.
+    Payloads use EventEnvelope wrapper; see shared/contracts/schemas/event-envelope.json
+
+defaultContentType: application/json
+
+servers:
+  kafka-local:
+    host: localhost:9092
+    protocol: kafka
+    description: Local docker-compose broker
+  kafka-prod:
+    host: kafka.upi-platform.svc.cluster.local:9092
+    protocol: kafka
+    description: Kubernetes Strimzi cluster
+
+channels:
+  upiTransactions:
+    address: upi-transactions
+    messages:
+      transactionReceived:
+        $ref: '#/components/messages/TransactionReceived'
+  validatedTransactions:
+    address: validated-transactions
+    messages:
+      transactionValidated:
+        $ref: '#/components/messages/TransactionValidated'
+  failedTransactions:
+    address: failed-transactions
+    messages:
+      transactionFailed:
+        $ref: '#/components/messages/TransactionFailed'
+  retryTransactions:
+    address: retry-transactions
+    messages:
+      transactionRetry:
+        $ref: '#/components/messages/TransactionRetry'
+  fraudAlerts:
+    address: fraud-alerts
+    messages:
+      fraudAlert:
+        $ref: '#/components/messages/FraudAlert'
+  latencyEvents:
+    address: latency-events
+    messages:
+      latencyRecorded:
+        $ref: '#/components/messages/LatencyRecorded'
+  bankHealth:
+    address: bank-health
+    messages:
+      bankHealthSnapshot:
+        $ref: '#/components/messages/BankHealthSnapshot'
+  congestionEvents:
+    address: congestion-events
+    messages:
+      congestionDetected:
+        $ref: '#/components/messages/CongestionDetected'
+  analyticsEvents:
+    address: analytics-events
+    messages:
+      analyticsMetric:
+        $ref: '#/components/messages/AnalyticsMetric'
+  deadLetterEvents:
+    address: dead-letter-events
+    messages:
+      deadLetter:
+        $ref: '#/components/messages/DeadLetter'
+
+operations:
+  publishTransaction:
+    action: send
+    channel:
+      $ref: '#/channels/upiTransactions'
+    summary: Tx Ingestion publishes raw transaction
+  publishValidated:
+    action: send
+    channel:
+      $ref: '#/channels/validatedTransactions'
+    summary: Tx Ingestion publishes validated transaction
+  consumeValidated:
+    action: receive
+    channel:
+      $ref: '#/channels/validatedTransactions'
+    summary: Bank Simulator processes payments
+  publishFailed:
+    action: send
+    channel:
+      $ref: '#/channels/failedTransactions'
+    summary: Bank Simulator publishes failures
+
+components:
+  messages:
+    TransactionReceived:
+      name: transaction.received
+      payload:
+        $ref: '../schemas/event-envelope.json'
+    TransactionValidated:
+      name: transaction.validated
+      payload:
+        $ref: '../schemas/event-envelope.json'
+    TransactionFailed:
+      name: transaction.failed
+      payload:
+        $ref: '../schemas/event-envelope.json'
+    TransactionRetry:
+      name: transaction.retry
+      payload:
+        $ref: '../schemas/event-envelope.json'
+    FraudAlert:
+      name: fraud.alert
+      payload:
+        $ref: '../schemas/event-envelope.json'
+    LatencyRecorded:
+      name: latency.recorded
+      payload:
+        $ref: '../schemas/event-envelope.json'
+    BankHealthSnapshot:
+      name: bank.health
+      payload:
+        $ref: '../schemas/event-envelope.json'
+    CongestionDetected:
+      name: congestion.detected
+      payload:
+        $ref: '../schemas/event-envelope.json'
+    AnalyticsMetric:
+      name: analytics.metric
+      payload:
+        $ref: '../schemas/event-envelope.json'
+    DeadLetter:
+      name: transaction.dead_letter
+      payload:
+        $ref: '../schemas/event-envelope.json'
+
+  messageTraits:
+    kafkaHeaders:
+      headers:
+        type: object
+        required: [correlation_id, event_version, content-type]
+        properties:
+          correlation_id:
+            type: string
+          traceparent:
+            type: string
+          idempotency_key:
+            type: string
+          event_version:
+            type: string
+          content-type:
+            type: string
+            const: application/json

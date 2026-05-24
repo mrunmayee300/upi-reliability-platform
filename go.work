@@ -1,0 +1,15 @@
+go 1.22
+
+use (
+	./services/api-gateway
+	./services/tx-generator
+	./services/tx-ingestion
+	./services/bank-simulator
+	./services/failure-detector
+	./services/retry-orchestrator
+	./services/intelligent-routing
+	./services/fraud-detector
+	./services/analytics
+	./services/notification
+	./shared/go
+)

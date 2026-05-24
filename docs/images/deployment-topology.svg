@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 380" role="img" aria-label="Deployment topology options">
+  <rect width="1000" height="380" fill="#0f172a"/>
+  <text x="500" y="32" text-anchor="middle" fill="#f1f5f9" font-family="Segoe UI, sans-serif" font-size="18" font-weight="600">Deployment Options</text>
+
+  <!-- Dev -->
+  <rect x="30" y="55" width="290" height="300" rx="10" fill="#1e293b" stroke="#34d399"/>
+  <text x="175" y="85" text-anchor="middle" fill="#6ee7b7" font-size="14" font-weight="600" font-family="Segoe UI, sans-serif">Local Dev</text>
+  <text x="175" y="108" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Segoe UI, sans-serif">bootstrap.ps1 + binaries</text>
+  <rect x="55" y="125" width="240" height="36" rx="5" fill="#0f172a" stroke="#64748b"/><text x="175" y="148" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="monospace">Docker: Kafka, PG, Redis</text>
+  <rect x="55" y="175" width="240" height="36" rx="5" fill="#0f172a" stroke="#64748b"/><text x="175" y="198" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="monospace">bin/*.exe services</text>
+  <rect x="55" y="225" width="240" height="36" rx="5" fill="#0f172a" stroke="#64748b"/><text x="175" y="248" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="monospace">Next.js :3000</text>
+  <text x="175" y="310" text-anchor="middle" fill="#64748b" font-size="10" font-family="Segoe UI, sans-serif">Fast iteration</text>
+
+  <!-- Compose -->
+  <rect x="355" y="55" width="290" height="300" rx="10" fill="#1e293b" stroke="#22d3ee"/>
+  <text x="500" y="85" text-anchor="middle" fill="#67e8f9" font-size="14" font-weight="600" font-family="Segoe UI, sans-serif">Docker Compose</text>
+  <text x="500" y="108" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Segoe UI, sans-serif">docker-compose-deploy.ps1</text>
+  <rect x="380" y="125" width="240" height="36" rx="5" fill="#0f172a" stroke="#64748b"/><text x="500" y="148" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="monospace">Infra + app containers</text>
+  <rect x="380" y="175" width="240" height="36" rx="5" fill="#0f172a" stroke="#64748b"/><text x="500" y="198" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="monospace">Single-host deploy</text>
+  <rect x="380" y="225" width="240" height="36" rx="5" fill="#0f172a" stroke="#64748b"/><text x="500" y="248" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="monospace">Demo / staging-like</text>
+  <text x="500" y="310" text-anchor="middle" fill="#64748b" font-size="10" font-family="Segoe UI, sans-serif">Easiest full stack</text>
+
+  <!-- K8s -->
+  <rect x="680" y="55" width="290" height="300" rx="10" fill="#1e293b" stroke="#a78bfa"/>
+  <text x="825" y="85" text-anchor="middle" fill="#c4b5fd" font-size="14" font-weight="600" font-family="Segoe UI, sans-serif">Kubernetes</text>
+  <text x="825" y="108" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Segoe UI, sans-serif">kind + Helm chart</text>
+  <rect x="705" y="125" width="240" height="36" rx="5" fill="#0f172a" stroke="#64748b"/><text x="825" y="148" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="monospace">Helm: upi-platform</text>
+  <rect x="705" y="175" width="240" height="36" rx="5" fill="#0f172a" stroke="#64748b"/><text x="825" y="198" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="monospace">HPA · Ingress · OTel</text>
+  <rect x="705" y="225" width="240" height="36" rx="5" fill="#0f172a" stroke="#64748b"/><text x="825" y="248" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="monospace">Terraform optional</text>
+  <text x="825" y="310" text-anchor="middle" fill="#64748b" font-size="10" font-family="Segoe UI, sans-serif">Production-shaped</text>
+</svg>

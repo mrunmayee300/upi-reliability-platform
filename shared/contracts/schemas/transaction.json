@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://upi-platform.local/schemas/transaction/v1",
+  "title": "UpiTransaction",
+  "type": "object",
+  "required": [
+    "transaction_id",
+    "idempotency_key",
+    "amount_paise",
+    "currency",
+    "payer_vpa",
+    "payee_vpa",
+    "bank_code",
+    "merchant_id",
+    "txn_type",
+    "device_fingerprint",
+    "created_at"
+  ],
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "pattern": "^TXN-[0-9a-f-]{36}$"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128
+    },
+    "amount_paise": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 100000000
+    },
+    "currency": {
+      "type": "string",
+      "enum": ["INR"]
+    },
+    "payer_vpa": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$",
+      "examples": ["alice@paytm", "bob@ybl"]
+    },
+    "payee_vpa": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$"
+    },
+    "bank_code": {
+      "type": "string",
+      "enum": ["HDFC", "ICICI", "SBI", "AXIS", "KOTAK", "PNB", "BOB", "YES"]
+    },
+    "merchant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "merchant_category": {
+      "type": "string",
+      "examples": ["5411", "5812"]
+    },
+    "txn_type": {
+      "type": "string",
+      "enum": ["P2P", "P2M", "MANDATE", "COLLECT"]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 140
+    },
+    "device_fingerprint": {
+      "type": "string"
+    },
+    "geo_region": {
+      "type": "string",
+      "examples": ["IN-MH", "IN-KA"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

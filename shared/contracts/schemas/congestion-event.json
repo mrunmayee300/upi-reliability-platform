@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://upi-platform.local/schemas/congestion-event/v1",
+  "title": "CongestionEvent",
+  "type": "object",
+  "required": ["bank_code", "congestion_score", "recommended_action", "recorded_at"],
+  "properties": {
+    "bank_code": { "type": "string" },
+    "congestion_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "0=clear, 1=critical"
+    },
+    "recommended_action": {
+      "type": "string",
+      "enum": ["NONE", "THROTTLE", "REROUTE", "CIRCUIT_OPEN"]
+    },
+    "alternate_bank_code": { "type": "string" },
+    "forecast_horizon_minutes": { "type": "integer" },
+    "source": {
+      "type": "string",
+      "enum": ["ROUTING", "AI_PREDICTION", "ANALYTICS"]
+    },
+    "recorded_at": { "type": "string", "format": "date-time" }
+  }
+}

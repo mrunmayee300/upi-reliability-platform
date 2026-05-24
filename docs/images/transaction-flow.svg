@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" role="img" aria-label="Happy path transaction flow">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#22d3ee"/></marker>
+  </defs>
+  <rect width="1000" height="420" fill="#0f172a" rx="8"/>
+  <text x="500" y="32" text-anchor="middle" fill="#f1f5f9" font-family="Segoe UI, sans-serif" font-size="18" font-weight="600">Transaction Lifecycle (Happy Path)</text>
+
+  <g font-family="Segoe UI, sans-serif">
+    <rect x="40" y="70" width="120" height="50" rx="6" fill="#1e293b" stroke="#22d3ee"/><text x="100" y="102" text-anchor="middle" fill="#e2e8f0" font-size="11">1. Generator</text>
+    <rect x="200" y="70" width="120" height="50" rx="6" fill="#312e81" stroke="#6366f1"/><text x="260" y="102" text-anchor="middle" fill="#e0e7ff" font-size="11">2. Gateway</text>
+    <rect x="360" y="70" width="120" height="50" rx="6" fill="#064e3b" stroke="#34d399"/><text x="420" y="102" text-anchor="middle" fill="#d1fae5" font-size="11">3. Ingestion</text>
+    <rect x="520" y="70" width="120" height="50" rx="6" fill="#422006" stroke="#f59e0b"/><text x="580" y="95" text-anchor="middle" fill="#fde68a" font-size="11">4. Kafka</text><text x="580" y="110" text-anchor="middle" fill="#fcd34d" font-size="9">upi-transactions</text>
+    <rect x="680" y="70" width="120" height="50" rx="6" fill="#1e293b" stroke="#64748b"/><text x="740" y="102" text-anchor="middle" fill="#e2e8f0" font-size="11">5. Bank Sim</text>
+    <rect x="840" y="70" width="120" height="50" rx="6" fill="#1e293b" stroke="#22c55e"/><text x="900" y="102" text-anchor="middle" fill="#bbf7d0" font-size="11">6. Success</text>
+  </g>
+
+  <line x1="160" y1="95" x2="200" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="320" y1="95" x2="360" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="480" y1="95" x2="520" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="640" y1="95" x2="680" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="800" y1="95" x2="840" y2="95" stroke="#22c55e" stroke-width="2" marker-end="url(#arr)"/>
+
+  <text x="500" y="165" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="13">Failure path branches to Failure Detector ’ Retry Orchestrator ’ DLQ</text>
+
+  <rect x="40" y="190" width="920" height="200" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="60" y="215" fill="#f87171" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600">FAILURE &amp; RECOVERY PATH</text>
+
+  <rect x="80" y="235" width="140" height="45" rx="5" fill="#450a0a" stroke="#ef4444"/>
+  <text x="150" y="263" text-anchor="middle" fill="#fecaca" font-size="11" font-family="Segoe UI, sans-serif">Bank timeout / 5xx</text>
+
+  <line x1="220" y1="257" x2="280" y2="257" stroke="#ef4444" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="280" y="235" width="160" height="45" rx="5" fill="#1e293b" stroke="#f97316"/>
+  <text x="360" y="263" text-anchor="middle" fill="#fed7aa" font-size="11" font-family="Segoe UI, sans-serif">Failure Detector</text>
+
+  <line x1="440" y1="257" x2="500" y2="257" stroke="#f97316" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="500" y="235" width="160" height="45" rx="5" fill="#1e293b" stroke="#eab308"/>
+  <text x="580" y="263" text-anchor="middle" fill="#fef08a" font-size="11" font-family="Segoe UI, sans-serif">Retry Orchestrator</text>
+
+  <line x1="660" y1="257" x2="720" y2="257" stroke="#eab308" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="720" y="235" width="100" height="45" rx="5" fill="#422006" stroke="#f59e0b"/>
+  <text x="770" y="263" text-anchor="middle" fill="#fde68a" font-size="10" font-family="Segoe UI, sans-serif">retry-events</text>
+
+  <rect x="840" y="235" width="100" height="45" rx="5" fill="#450a0a" stroke="#dc2626"/>
+  <text x="890" y="258" text-anchor="middle" fill="#fecaca" font-size="10" font-family="Segoe UI, sans-serif">DLQ</text>
+  <text x="890" y="272" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Segoe UI, sans-serif">max retries</text>
+
+  <text x="500" y="330" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="11">Idempotency-Key prevents duplicate charges · Correlation-ID traces gateway ’ bank ’ retry</text>
+  <text x="500" y="355" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10">Topics: failed-transactions · retry-transactions · dead-letter-events</text>
+</svg>

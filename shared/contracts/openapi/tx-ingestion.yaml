@@ -1,0 +1,86 @@
+openapi: 3.1.0
+info:
+  title: Transaction Ingestion Service
+  version: 1.0.0
+  description: Validates transactions, enforces idempotency, publishes to Kafka
+
+servers:
+  - url: http://localhost:8081
+
+paths:
+  /health/live:
+    get:
+      operationId: liveness
+      responses:
+        '200':
+          description: OK
+
+  /health/ready:
+    get:
+      operationId: readiness
+      responses:
+        '200':
+          description: OK
+        '503':
+          description: Not ready
+
+  /v1/transactions:
+    post:
+      operationId: ingestTransaction
+      summary: Internal ingestion endpoint (also called by Gateway)
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: X-Correlation-Id
+          in: header
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/transaction.json'
+      responses:
+        '202':
+          description: Published to Kafka
+        '400':
+          description: Validation error
+        '409':
+          description: Duplicate
+
+  /v1/transactions/{transactionId}:
+    get:
+      operationId: getTransaction
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Transaction status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'
+        '404':
+          description: Not found
+
+components:
+  schemas:
+    TransactionStatus:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+        status:
+          type: string
+          enum: [RECEIVED, VALIDATED, PROCESSING, SUCCESS, FAILED, RETRYING, DLQ]
+        updated_at:
+          type: string
+          format: date-time

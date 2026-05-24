@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://upi-platform.local/schemas/bank-health/v1",
+  "title": "BankHealthSnapshot",
+  "type": "object",
+  "required": ["bank_code", "status", "success_rate", "p95_latency_ms", "recorded_at"],
+  "properties": {
+    "bank_code": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["HEALTHY", "DEGRADED", "CONGESTED", "DOWN"]
+    },
+    "success_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "p95_latency_ms": { "type": "integer", "minimum": 0 },
+    "error_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "inflight_requests": { "type": "integer", "minimum": 0 },
+    "circuit_state": {
+      "type": "string",
+      "enum": ["CLOSED", "OPEN", "HALF_OPEN"]
+    },
+    "recorded_at": { "type": "string", "format": "date-time" }
+  }
+}

@@ -1,0 +1,105 @@
+openapi: 3.1.0
+info:
+  title: AI Prediction Service
+  version: 1.0.0
+  description: Traffic and congestion forecasting (Python/FastAPI)
+
+servers:
+  - url: http://localhost:8091
+
+paths:
+  /health/ready:
+    get:
+      responses:
+        '200':
+          description: OK
+
+  /v1/predict/congestion:
+    post:
+      operationId: predictCongestion
+      summary: Forecast bank congestion for next N minutes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                horizon_minutes:
+                  type: integer
+                  default: 15
+                bank_codes:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CongestionForecast'
+
+  /v1/predict/traffic:
+    post:
+      operationId: predictTraffic
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrafficForecast'
+
+  /v1/recommend/autoscale:
+    get:
+      operationId: recommendAutoscale
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoscaleRecommendation'
+
+components:
+  schemas:
+    CongestionForecast:
+      type: object
+      properties:
+        forecasts:
+          type: array
+          items:
+            type: object
+            properties:
+              bank_code:
+                type: string
+              predicted_score:
+                type: number
+              confidence:
+                type: number
+              peak_at:
+                type: string
+                format: date-time
+
+    TrafficForecast:
+      type: object
+      properties:
+        predicted_tps:
+          type: number
+        surge_probability:
+          type: number
+        window_start:
+          type: string
+          format: date-time
+        window_end:
+          type: string
+          format: date-time
+
+    AutoscaleRecommendation:
+      type: object
+      properties:
+        service:
+          type: string
+        current_replicas:
+          type: integer
+        recommended_replicas:
+          type: integer
+        reason:
+          type: string

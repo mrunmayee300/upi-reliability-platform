@@ -1,0 +1,26 @@
+# Local / kind cluster overrides
+global:
+  imagePullPolicy: Never  # use locally built images loaded into kind
+
+services:
+  apiGateway:
+    replicas: 1
+    hpa:
+      enabled: false
+  txIngestion:
+    replicas: 1
+    hpa:
+      enabled: false
+  bankSimulator:
+    replicas: 1
+    hpa:
+      enabled: false
+  analytics:
+    replicas: 1
+    hpa:
+      enabled: false
+  dashboard:
+    replicas: 1
+
+ingress:
+  host: localhost
