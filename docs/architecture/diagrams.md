@@ -4,8 +4,8 @@ Static diagrams (render on GitHub without Mermaid):
 
 | Diagram | Image |
 |---------|-------|
-| Platform overview | ![Architecture](../images/architecture-overview.svg) |
-| Transaction flow | ![Transaction flow](../images/transaction-flow.svg) |
+| Platform overview | ![Architecture](../images/architecture-overview.png) |
+| Transaction flow | ![Transaction flow](../images/transaction-flow.png) |
 | Deployment options | ![Deployment](../images/deployment-topology.svg) |
 | Observability | ![Observability](../images/observability-stack.svg) |
 | Dashboard UI | ![Dashboard](../images/dashboard-preview.svg) |

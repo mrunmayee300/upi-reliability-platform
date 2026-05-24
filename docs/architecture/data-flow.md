@@ -1,6 +1,6 @@
 # Data Flow & State Machine
 
-![Transaction flow](../images/transaction-flow.svg)
+![Transaction flow](../images/transaction-flow.png)
 
 ## Transaction lifecycle states
 

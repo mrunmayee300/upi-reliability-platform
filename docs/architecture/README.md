@@ -22,7 +22,7 @@
 
 ## Service map
 
-![Platform architecture](../images/architecture-overview.svg)
+![Platform architecture](../images/architecture-overview.png)
 
 ## Phase roadmap
 
