@@ -1,6 +1,5 @@
 # UPI Transaction Intelligence & Failure Recovery Platform
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 
 A **production-style**, event-driven platform that simulates **UPI-scale payment traffic** with realistic bank failures, automated retry orchestration, fraud detection, intelligent routing, and a real-time operations dashboard.
