@@ -16,8 +16,6 @@ Built as a learning and portfolio system: Kafka pipelines, Go microservices, Nex
 <p align="center">
   <img src="docs\images\2.png" alt="Operations dashboard preview-3" width="720"/>
 </p>
-<p align="center">
-  <img src="docs\images\3.png" alt="Operations dashboard preview-4" width="720"/>
 </p>
 <p align="center"><em>Operations dashboard — live TPS, bank health, retries, and event stream</em></p>
 
